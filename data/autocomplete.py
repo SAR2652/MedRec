@@ -1,25 +1,30 @@
-import sqlite3
-
+import sqlite3, os
+path = '/home/sarvesh/ML_Github/MedRec/'
 class DiseaseList:
     def __init__(self):
-        self.conn = sqlite3.connect('medi_colab.db')
+        self.conn = sqlite3.connect(path + 'databases/medi_colab.db')
         self.c = self.conn.cursor()
 
     def generate_common_names_list(self):
         #accept common names output column from DB
-        self.c.execute("""SELECT common_name FROM icd_codes""")
+        self.c.execute("""SELECT * FROM icd_codes""")
         names = self.c.fetchall()    #get output tuples
-        common_names = []   #initialize an empty list
+        common_names = ['']   #initialize a list with an empty string
 
         #extract common names from output tuples into a list
         for common_name in names:
-            common_names.append(common_name[0])
+            name = common_name[0] + ' - ' + common_name[1]
+            common_names.append(name)
 
         return common_names
         
-    def generate_scientific_names_list(self, name):
-        #get icd_code for common_name
-        self.c.execute("""SELECT icd_code WHERE common_name = {}""".format(name))
+    def generate_scientific_names_list(self, icd_code):
+        #get icd_sub_code and sub disease name from common name
+        self.c.execute("""SELECT * FROM icd_sub_codes WHERE icd_code = '{}'""".format(icd_code))
+        return self.c.fetchall()
+
+        
+
 
 
 
