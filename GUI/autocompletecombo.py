@@ -2,9 +2,9 @@ import sys
 from PyQt5.QtWidgets import QComboBox, QCompleter, QApplication, QWidget
 from PyQt5.QtCore import QSortFilterProxyModel, Qt 
 
-class autocompleteGUI(QComboBox):
+class CommonNameAutocomplete(QComboBox):
     def __init__(self, parent = None):
-        super(autocompleteGUI, self).__init__(parent)
+        super(CommonNameAutocomplete, self).__init__(parent)
         self.setFocusPolicy(Qt.StrongFocus)
         self.setEditable(True)
 
@@ -33,4 +33,3 @@ class autocompleteGUI(QComboBox):
         if text:
             index = self.findText(str(text))
             self.setCurrentIndex(index)
-

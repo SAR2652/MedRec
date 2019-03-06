@@ -1,4 +1,5 @@
 from PyQt5.QtWidgets import QWidget,QLineEdit, QLabel, QComboBox, QFormLayout, QTextEdit, QPushButton, QGroupBox, QHBoxLayout, QRadioButton
+from PyQt5.QtGui import QFont
 
 class PatientRegister(QWidget):
     def __init__(self, parent=None):
@@ -6,7 +7,7 @@ class PatientRegister(QWidget):
         self.initPatientRegisterUI()
 
     def initPatientRegisterUI(self):
-        self.setGeometry(150, 150, 1080, 720)
+        self.setGeometry(525, 225, 900, 600)
 
         #initialize a form groupbox
         self.formGroupBox = QGroupBox(self)
@@ -21,7 +22,7 @@ class PatientRegister(QWidget):
         self.lastnameLabel = QLabel('Last Name : ', self)
         self.firstnameLabel = QLabel('First Name : ', self)
         self.middlenameLabel = QLabel('Middle Name : ', self)
-        self.ageLabel = QLabel('Age : ', self)
+        self.dobLabel = QLabel('Date of Birth : ', self)
         self.sexLabel = QLabel('Sex : ', self)
         self.addressLabel = QLabel('Address : ', self)
         self.occupationLabel = QLabel('Occupation : ', self)
@@ -32,7 +33,7 @@ class PatientRegister(QWidget):
         self.lastnameEntry = QLineEdit(self)
         self.firstnameEntry = QLineEdit(self)
         self.middlenameEntry = QLineEdit(self)
-        self.ageEntry = QLineEdit(self)
+        self.dobEntry = QLineEdit(self)
         self.maleSexEntry = QRadioButton('Male', self)
         self.femaleSexEntry = QRadioButton('Female', self)
         self.addressEntry = QTextEdit(self)
@@ -54,7 +55,7 @@ class PatientRegister(QWidget):
         self.registration_form_layout.addRow(self.lastnameLabel, self.lastnameEntry)
         self.registration_form_layout.addRow(self.firstnameLabel, self.firstnameEntry)
         self.registration_form_layout.addRow(self.middlenameLabel, self.middlenameEntry)
-        self.registration_form_layout.addRow(self.ageLabel, self.ageEntry)
+        self.registration_form_layout.addRow(self.dobLabel, self.dobEntry)
 
         #add horizontally oriented gender buttons
         self.registration_form_layout.addRow(self.sexLabel, self.hboxLayout)
@@ -65,12 +66,19 @@ class PatientRegister(QWidget):
         self.registration_form_layout.addRow(self.contact_number_1_label, self.contact_number_1_entry)
         self.registration_form_layout.addRow(self.contact_number_2_label, self.contact_number_2_entry)
 
-        #add submit button with column span
+        #add all buttons with their respective column spans
         self.registration_form_layout.addRow(self.resetButton)
         self.registration_form_layout.addRow(self.offlineSubmitButton)
         self.registration_form_layout.addRow(self.onlineSubmitButton)
 
-        #set the layout for the groupbox and its position
+        #create and seta custom font for the form
+        newFont = QFont("SansSerif", 11.5)
+
+        #set the layout for the groupbox along with its position
         self.formGroupBox.setLayout(self.registration_form_layout)
-        self.formGroupBox.move(300, 50)
+        self.formGroupBox.move(250, 0)
+        self.formGroupBox.setFont(newFont)
+
+    
+    
 
