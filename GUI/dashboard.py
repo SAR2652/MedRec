@@ -5,7 +5,7 @@ class Dashboard(QWidget):
         self.initDashboardUI()
 
     def initDashboardUI(self):
-        self.setGeometry(525, 225, 900, 600)
+        self.setGeometry(525, 225, 1080, 720)
 
         #initialize buttons
         self.makeRecordEntryButton = QPushButton('Enter a new record', self)

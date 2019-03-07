@@ -7,7 +7,7 @@ class Case(QWidget):
         self.initCaseUI()
 
     def initCaseUI(self):
-        self.setGeometry(525, 225, 900, 600)
+        self.setGeometry(525, 225, 1080, 720)
         
         #initialize buttons
         self.new_case_button = QPushButton('Create a new case', self)

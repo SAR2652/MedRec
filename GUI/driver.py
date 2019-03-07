@@ -3,6 +3,7 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtSql import QSqlDatabase, QSqlQueryModel, QSqlQuery
 from PyQt5.QtCore import pyqtSlot
 import sys, os
+from hashlib import md5
 path = '/home/sarvesh/ML_Github/MedRec/'
 sys.path.append(path + '/data/')
 from autocomplete import DiseaseList
@@ -13,15 +14,17 @@ from profile import Profile
 from register_user_screen import Register
 from register_patient_screen import PatientRegister
 from saveRecord import NewRecord
+from viewRecord import ViewRecord
 
 #define global variables for ease in submitting values
 start_widget = None
 patient_widget = None
+newCaseRecordWidget = None
 
 class MainWindow(QMainWindow):
     def __init__(self, parent = None):
         super(MainWindow, self).__init__(parent)
-        self.setGeometry(525, 225, 900, 600)
+        self.setGeometry(525, 225, 1080, 720)
 
         #initialize and set a central widget
         self.central_widget = QStackedWidget()
@@ -33,7 +36,7 @@ class MainWindow(QMainWindow):
         #initialize empty scientific names list
         self.scientific_names = []
 
-        if os.path.isfile(path + '/data/userdetails.txt'):
+        if not os.path.isfile(path + '/data/userdetails.txt'):
             global start_widget
             #initialize a login widget
             start_widget = Login(self)
@@ -47,6 +50,12 @@ class MainWindow(QMainWindow):
         self.central_widget.setCurrentWidget(start_widget)
 
     def login(self):
+        global start_widget
+        user_id = start_widget.user_idLineEdit.text()
+        md5sum = md5(start_widget.passwordLineEdit.text().encode())
+        encrypted = str(md5sum.digest())
+        print(encrypted)
+
         #log in to dashboard
         dashboard = Dashboard(self)
         self.central_widget.addWidget(dashboard)
@@ -56,6 +65,7 @@ class MainWindow(QMainWindow):
         dashboard.makeRecordEntryButton.clicked.connect(self.createCase)
         dashboard.viewProfileButton.clicked.connect(self.viewProfile)
         dashboard.registerPatientButton.clicked.connect(self.register_patient)
+        dashboard.viewPatientRecordButton.clicked.connect(self.viewRecord)
 
     def createCase(self):
         #define case
@@ -73,6 +83,9 @@ class MainWindow(QMainWindow):
         #add methods to submit data offline and online
         patient_widget.offlineSubmitButton.clicked.connect(self.savePatientOffline)
         patient_widget.onlineSubmitButton.clicked.connect(self.submitPatientOnline)
+
+    #def savePatientOffline(self):
+
 
     #def saveRecordOffline(self):
         #function to save record in sqlite3 database
@@ -105,6 +118,7 @@ class MainWindow(QMainWindow):
 
     #create a record for a completely existing case
     def createNewCaseRecord(self):
+        global newCaseRecordWidget
         newRecordWidget = NewRecord(self)
         self.central_widget.addWidget(newRecordWidget)
         self.central_widget.setCurrentWidget(newRecordWidget)
@@ -126,7 +140,7 @@ class MainWindow(QMainWindow):
             #empty combobox
             newRecordWidget.scientific_autocomplete.clear()
 
-            #get index of item in 
+            #get index of item in icd_code dropdown
             index = newRecordWidget.common_autocomplete.currentIndex()
             if index == 0:
                 newRecordWidget.scientific_autocomplete.setEnabled(False)
@@ -149,11 +163,19 @@ class MainWindow(QMainWindow):
 
         #add it to global scientific function
         del self.scientific_names[:]
-
         self.scientific_names = scientific_names
 
         #connect to dropdown icd code function
         newRecordWidget.common_autocomplete.currentIndexChanged.connect(on_currentIndexChanged)
+
+    def viewRecord(self):
+        view_record_widget = ViewRecord(self)
+        self.central_widget.addWidget(view_record_widget)
+        self.central_widget.setCurrentWidget(view_record_widget)
+
+
+
+
 
 
 

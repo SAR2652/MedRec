@@ -8,13 +8,13 @@ class NewRecord(QWidget):
         self.initFormRecordUI()
 
     def initFormRecordUI(self):
-        self.setGeometry(525, 225, 900, 600)
+        self.setGeometry(525, 225, 1080, 720)
 
         #initialize group box
-        #self.formGroupBox = QGroupBox(self)
+        self.formGroupBox = QGroupBox(self)
 
         #initialize form layout
-        #self.formLayout = QFormLayout(self)
+        self.formLayout = QFormLayout(self)
         
         #initialize labels
         self.common_name_label = QLabel('Common Disease Name : ', self)
@@ -24,10 +24,10 @@ class NewRecord(QWidget):
         self.common_autocomplete = CommonNameAutocomplete(self)
         self.scientific_autocomplete = QComboBox(self)
 
-        self.common_autocomplete.resize(700, 30)
-        self.scientific_autocomplete.resize(700, 30)
+        self.common_autocomplete.resize(650, 30)
+        self.scientific_autocomplete.resize(650, 30)
 
-        #position the widgets
-        self.common_autocomplete.move(20, 50)
-        self.scientific_autocomplete.move(20, 90)
+        #position the comboboxes
+        self.common_autocomplete.move(200, 50)
+        self.scientific_autocomplete.move(200, 90)
         
