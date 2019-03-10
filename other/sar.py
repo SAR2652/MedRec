@@ -37,11 +37,13 @@ city, state = zip(*mapping)
 
 final = list(zip(p, comma_mapping))
 
-conn = sqlite3.connect('D:\Practice\MedRec\other\medi_colab.db')
+conn = sqlite3.connect('/home/sarvesh/ML_Github/MedRec/databases/medi_colab.db')
 c = conn.cursor()
 
-c.execute("""CREATE TABLE region (pincode INT PRIMARY KEY, region VARCHAR(75))""")
-for pin, region in final:
-    c.execute("""INSERT INTO region VALUES (?, ?)""", (pin, region))
-conn.commit()
+#c.execute("""CREATE TABLE region (pincode INT PRIMARY KEY, region VARCHAR(75))""")
+#for pin, region in final:
+    #c.execute("""INSERT INTO region VALUES (?, ?)""", (pin, region))
+#conn.commit()
+c.execute("""SELECT * FROM region WHERE pincode = 110""")
+print(c.fetchall())
 print("Region table successfully created")
