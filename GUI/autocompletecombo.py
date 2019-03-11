@@ -2,9 +2,9 @@ import sys
 from PyQt5.QtWidgets import QComboBox, QCompleter, QApplication, QWidget
 from PyQt5.QtCore import QSortFilterProxyModel, Qt 
 
-class CommonNameAutocomplete(QComboBox):
+class Autocomplete(QComboBox):
     def __init__(self, parent = None):
-        super(CommonNameAutocomplete, self).__init__(parent)
+        super(Autocomplete, self).__init__(parent)
         self.setFocusPolicy(Qt.StrongFocus)
         self.setEditable(True)
 

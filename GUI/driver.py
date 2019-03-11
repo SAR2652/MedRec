@@ -4,22 +4,25 @@ from PyQt5.QtSql import QSqlDatabase, QSqlQueryModel, QSqlQuery
 from PyQt5.QtCore import pyqtSlot
 import sys, os
 from hashlib import md5
+from urllib.request import urlopen
+from urllib.error import URLError
 path = '/home/sarvesh/ML_Github/MedRec/'
 sys.path.append(path + '/data/')
-from autocomplete import DiseaseList
+from diseaselist import DiseaseList
 from login import Login
 from dashboard import Dashboard
 from case_screen import Case
 from profile import Profile
 from register_user_screen import Register
 from register_patient_screen import PatientRegister
-from saveRecord import NewRecord
+from newCaseRecord import NewRecord
 from viewRecord import ViewRecord
 
 #define global variables for ease in submitting values
 start_widget = None
 patient_widget = None
-newCaseRecordWidget = None
+newRecordWidget = None
+logged_user = None
 
 class MainWindow(QMainWindow):
     def __init__(self, parent = None):
@@ -36,7 +39,7 @@ class MainWindow(QMainWindow):
         #initialize empty scientific names list
         self.scientific_names = []
 
-        if not os.path.isfile(path + '/data/userdetails.txt'):
+        if not os.path.isfile(path + '/data/usercreds.txt'):
             global start_widget
             #initialize a login widget
             start_widget = Login(self)
@@ -51,10 +54,11 @@ class MainWindow(QMainWindow):
 
     def login(self):
         global start_widget
-        user_id = start_widget.user_idLineEdit.text()
-        md5sum = md5(start_widget.passwordLineEdit.text().encode())
-        encrypted = str(md5sum.digest())
-        print(encrypted)
+        if logged_user is not None:
+            user_id = start_widget.user_idLineEdit.text()
+            md5sum = md5(start_widget.passwordLineEdit.text().encode())
+            encrypted = str(md5sum.digest())
+            
 
         #log in to dashboard
         dashboard = Dashboard(self)
@@ -62,19 +66,25 @@ class MainWindow(QMainWindow):
         self.central_widget.setCurrentWidget(dashboard)
 
         #define methods to access on clicking buttons
-        dashboard.makeRecordEntryButton.clicked.connect(self.createCase)
+        dashboard.makeRecordEntryButton.clicked.connect(self.chooseCase)
         dashboard.viewProfileButton.clicked.connect(self.viewProfile)
         dashboard.registerPatientButton.clicked.connect(self.register_patient)
         dashboard.viewPatientRecordButton.clicked.connect(self.viewRecord)
 
-    def createCase(self):
+    def chooseCase(self):
         #define case
         case_widget = Case(self)
         self.central_widget.addWidget(case_widget)
         self.central_widget.setCurrentWidget(case_widget)
-        case_widget.new_case_button.clicked.connect(self.createNewCaseRecord)
+
+        #methods available
+        if case_widget.newCase_choice.isChecked():
+            case_widget.recordCreate_button.clicked.connect(lambda : self.createNewCaseRecord(0))
+        else:
+            case_widget.recordCreate_button.clicked.connect(lambda : self.createNewCaseRecord(1))
 
     def register_patient(self):
+
         #define and add patient registry form to the list of widgets
         patient_widget = PatientRegister(self)
         self.central_widget.addWidget(patient_widget)
@@ -103,9 +113,10 @@ class MainWindow(QMainWindow):
     def register(self):
         global start_widget
         last_name = start_widget.lastnameEntry.text()
+        print(last_name)
         first_name = start_widget.firstnameEntry.text()
         middle_name = start_widget.middlenameEntry.text()
-        dob = start_widget.dobEntry.selectedDate().toString("dd/MM/yyyy")
+        dob = start_widget.dobEntry.selectedDate().toString("yyyy-MM-dd")
         sex = 0 #default
         if start_widget.femaleSexEntry.isChecked():
             sex = 1
@@ -113,15 +124,19 @@ class MainWindow(QMainWindow):
         clinic_address = start_widget.clinicAddressEntry.text()
         degree = start_widget.degreeEntry.text()
         field = start_widget.fieldEntry.text()
-        #city = 
+        password = start_widget.passwordEntry().text()
+        confpassword = start_widget.confirmpasswordEntry.text()
+        #region = 
         #affiliation =
 
     #create a record for a completely existing case
-    def createNewCaseRecord(self):
-        global newCaseRecordWidget
+    def createNewCaseRecord(self, n):
+        global newRecordWidget
         newRecordWidget = NewRecord(self)
         self.central_widget.addWidget(newRecordWidget)
         self.central_widget.setCurrentWidget(newRecordWidget)
+        #if n == 0:
+            #case_widget.
 
         dl = DiseaseList()
         common_names = dl.generate_common_names_list()
@@ -167,17 +182,20 @@ class MainWindow(QMainWindow):
 
         #connect to dropdown icd code function
         newRecordWidget.common_autocomplete.currentIndexChanged.connect(on_currentIndexChanged)
-
+        
+    #view saved records
     def viewRecord(self):
         view_record_widget = ViewRecord(self)
         self.central_widget.addWidget(view_record_widget)
         self.central_widget.setCurrentWidget(view_record_widget)
 
-
-
-
-
-
+    #check internet connecivity    
+    def checkInternetConn(self):
+        try:
+            urlopen('https://www.google.co.in', timeout = 1)
+            return True
+        except URLError as err: 
+            return False
 
 
 
@@ -186,5 +204,4 @@ if __name__ == '__main__':
     mainWindow = MainWindow()
     mainWindow.show()
     sys.exit(app.exec_())
-
 

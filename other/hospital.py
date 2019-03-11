@@ -31,13 +31,15 @@ c = conn.cursor()
 
 #c.execute("""DROP TABLE hospital""")
 
-#c.execute("""CREATE TABLE hospital (hospital_id INT PRIMARY KEY, name VARCHAR(20), address TEXT, city VARCHAR(15), pincode INT, country_code INT, FOREIGN KEY(pincode) REFERENCES region(pincode), FOREIGN KEY(country_code) REFERENCES country(country_code))""")
+#c.execute("""CREATE TABLE hospital (hospital_id INT PRIMARY KEY, name VARCHAR(20), address TEXT, city VARCHAR(20), pincode INT, country_code INT, FOREIGN KEY(pincode) REFERENCES region(pincode), FOREIGN KEY(country_code) REFERENCES country(country_code))""")
 
-mapping = list(zip(ids, names, address, city, pincodes, country))
-for id, name, address, city, pincode, country in mapping:
-    c.execute("""INSERT INTO hospital VALUES (?, ?, ?, ?, ?, ?)""", (id, name, address, city, pincode, country))
+#mapping = list(zip(ids, names, address, city, pincodes, country))
+#for id, name, address, city, pincode, country in mapping:
+    #c.execute("""INSERT INTO hospital VALUES (?, ?, ?, ?, ?, ?)""", (id, name, address, city, pincode, country))
 
-conn.commit()
+#c.execute("""INSERT INTO hospital VALUES (?, ?, ?, ?, ?, ?)""", (999999999, 'None', 'None', 'None', 1000, 000))
+
+#conn.commit()
 
 c.execute("""SELECT * FROM hospital""")
 print(c.fetchall())

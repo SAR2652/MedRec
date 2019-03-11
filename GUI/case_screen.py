@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QComboBox
+from PyQt5.QtWidgets import QApplication, QWidget, QRadioButton, QComboBox, QPushButton
 from PyQt5.QtGui import QFont
 
 class Case(QWidget):
@@ -10,21 +10,25 @@ class Case(QWidget):
         self.setGeometry(525, 225, 1080, 720)
         
         #initialize buttons
-        self.new_case_button = QPushButton('Create a new case', self)
-        self.existing_case_button = QPushButton('Update an existing case', self)
+        self.newCase_choice = QRadioButton('Create a new case', self)
+        self.existingCase_choice = QRadioButton('Update an existing case', self)
+        self.recordCreate_button = QPushButton('Next', self)
 
         #define custom font
         customFont = QFont("SansSerif", 19)
 
         #assign font to buttons
-        self.new_case_button.setFont(customFont)
-        self.existing_case_button.setFont(customFont)
+        self.newCase_choice.setFont(customFont)
+        self.existingCase_choice.setFont(customFont)
+        self.recordCreate_button.setFont(customFont)
 
         #resize the buttons
-        self.new_case_button.resize(350, 100)
-        self.existing_case_button.resize(350, 100)
+        self.newCase_choice.resize(350, 100)
+        self.existingCase_choice.resize(350, 100)
+        self.recordCreate_button.resize(200, 75)
 
         #position buttons
-        self.new_case_button.move(340, 240)
-        self.existing_case_button.move(340, 380)
+        self.newCase_choice.move(340, 240)
+        self.existingCase_choice.move(340, 290)
+        self.recordCreate_button.move(375, 370)
 
