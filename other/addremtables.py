@@ -9,7 +9,7 @@ c = conn.cursor()
 
 #c.execute("""CREATE TABLE patient_case (case_id INT PRIMARY KEY, patient_id INT, mp_id INT, icd_sub_code VARCHAR(10), icd_code VARCHAR(10), HPC TEXT, MoI TEXT, D_and_V TEXT, clinical_note TEXT, no_of_visits INT, created_at TIMESTAMP, FOREIGN KEY(patient_id) REFERENCES patient(patient_id), FOREIGN KEY(icd_code) REFERENCES icd_codes(icd_code), FOREIGN KEY(icd_sub_code) REFERENCES icd_sub_codes(icd_sub_code), FOREIGN KEY(mp_id) REFERENCES medical_practitioner(mp_id)) """)
 
-c.execute("""CREATE TABLE patient_record (record_id INT PRIMARY KEY, visit_no INT, on_arrival TEXT, diagnosis TEXT, Tx TEXT, report_suggestions TEXT, medication TEXT, advice TEXT, query TEXT, case_id INT, created_at TIMESTAMP, FOREIGN KEY(case_id) REFERENCES patient_case(case_id))""")
+#c.execute("""CREATE TABLE patient_record (record_id INT PRIMARY KEY, visit_no INT, on_arrival TEXT, diagnosis TEXT, Tx TEXT, report_suggestions TEXT, medication TEXT, advice TEXT, query TEXT, case_id INT, created_at TIMESTAMP, FOREIGN KEY(case_id) REFERENCES patient_case(case_id))""")
 
 conn.commit()
 conn.close()
