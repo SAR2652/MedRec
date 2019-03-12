@@ -39,7 +39,7 @@ class MainWindow(QMainWindow):
         #initialize empty scientific names list
         self.scientific_names = []
 
-        if not os.path.isfile(path + '/data/usercreds.txt'):
+        if os.path.isfile(path + '/data/usercreds.txt'):
             global start_widget
             #initialize a login widget
             start_widget = Login(self)
@@ -95,10 +95,7 @@ class MainWindow(QMainWindow):
         patient_widget.onlineSubmitButton.clicked.connect(self.submitPatientOnline)
 
     #def savePatientOffline(self):
-
-
-    #def saveRecordOffline(self):
-        #function to save record in sqlite3 database
+    #def saveRecord(self):
 
     #def submitRecordOnline(self)
     def viewProfile(self):
@@ -182,7 +179,8 @@ class MainWindow(QMainWindow):
 
         #connect to dropdown icd code function
         newRecordWidget.common_autocomplete.currentIndexChanged.connect(on_currentIndexChanged)
-        
+
+
     #view saved records
     def viewRecord(self):
         view_record_widget = ViewRecord(self)

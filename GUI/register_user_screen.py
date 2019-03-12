@@ -7,10 +7,11 @@ class Register(QWidget):
         self.initRegistrationUI()
 
     def initRegistrationUI(self):
-        self.setGeometry(525, 225, 900, 600)
+        self.setGeometry(525, 225, 1080, 720)
 
         #initialize a scroll area
         self.formScrollArea = QScrollArea(self)
+        self.formScrollArea.resize(1080, 720)
 
         #iniialize a groupbox
         self.registryformGroupBox = QGroupBox(self)
@@ -87,8 +88,8 @@ class Register(QWidget):
 
         #set the final layout
         self.formScrollArea.setWidget(self.registryformGroupBox)
-        self.formScrollArea.move(250, 0)
-        self.formScrollArea.resize(700, 600)
+        self.formScrollArea.move(300, 0)
+        self.formScrollArea.resize(1080, 720)
 
 
 

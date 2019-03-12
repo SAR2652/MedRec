@@ -32,3 +32,5 @@ class Case(QWidget):
         self.existingCase_choice.move(340, 290)
         self.recordCreate_button.move(375, 370)
 
+
+

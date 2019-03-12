@@ -49,7 +49,7 @@ class Login(QWidget):
         self.user_idLineEdit.resize(500, 30)
         self.passwordLineEdit.resize(500, 30)
 
-        #resize login button
+        #resize login button1
         self.loginButton.resize(150, 30)
 
         #position labels
