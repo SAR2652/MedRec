@@ -39,7 +39,7 @@ class MainWindow(QMainWindow):
         #initialize empty scientific names list
         self.scientific_names = []
 
-        if os.path.isfile(path + '/data/usercreds.txt'):
+        if not os.path.isfile(path + '/data/usercreds.txt'):
             global start_widget
             #initialize a login widget
             start_widget = Login(self)
@@ -51,6 +51,26 @@ class MainWindow(QMainWindow):
         #make it initial widget
         self.central_widget.addWidget(start_widget)
         self.central_widget.setCurrentWidget(start_widget)
+
+    #register a new user
+    def register(self):
+        global start_widget
+        last_name = start_widget.lastnameEntry.text()
+        print(last_name)
+        first_name = start_widget.firstnameEntry.text()
+        middle_name = start_widget.middlenameEntry.text()
+        dob = start_widget.dobEntry.selectedDate().toString("yyyy-MM-dd")
+        sex = 0 #default
+        if start_widget.femaleSexEntry.isChecked():
+            sex = 1
+        address = start_widget.addressEntry.text()
+        clinic_address = start_widget.clinicAddressEntry.text()
+        degree = start_widget.degreeEntry.text()
+        field = start_widget.fieldEntry.text()
+        password = start_widget.passwordEntry().text()
+        confpassword = start_widget.confirmpasswordEntry.text()
+        #region = 
+        #affiliation =
 
     def login(self):
         global start_widget
@@ -95,7 +115,7 @@ class MainWindow(QMainWindow):
         patient_widget.onlineSubmitButton.clicked.connect(self.submitPatientOnline)
 
     #def savePatientOffline(self):
-    #def saveRecord(self):
+    
 
     #def submitRecordOnline(self)
     def viewProfile(self):
@@ -106,25 +126,7 @@ class MainWindow(QMainWindow):
         #return to dashboard
         profile_widget.backButton.clicked.connect(self.login)
         
-    #register a new user
-    def register(self):
-        global start_widget
-        last_name = start_widget.lastnameEntry.text()
-        print(last_name)
-        first_name = start_widget.firstnameEntry.text()
-        middle_name = start_widget.middlenameEntry.text()
-        dob = start_widget.dobEntry.selectedDate().toString("yyyy-MM-dd")
-        sex = 0 #default
-        if start_widget.femaleSexEntry.isChecked():
-            sex = 1
-        address = start_widget.addressEntry.text()
-        clinic_address = start_widget.clinicAddressEntry.text()
-        degree = start_widget.degreeEntry.text()
-        field = start_widget.fieldEntry.text()
-        password = start_widget.passwordEntry().text()
-        confpassword = start_widget.confirmpasswordEntry.text()
-        #region = 
-        #affiliation =
+    
 
     #create a record for a completely existing case
     def createNewCaseRecord(self, n):
@@ -148,7 +150,7 @@ class MainWindow(QMainWindow):
         def on_currentIndexChanged(self):
             #empty list
             del scientific_names[:]
-            
+
             #empty combobox
             newRecordWidget.scientific_autocomplete.clear()
 
@@ -179,6 +181,31 @@ class MainWindow(QMainWindow):
 
         #connect to dropdown icd code function
         newRecordWidget.common_autocomplete.currentIndexChanged.connect(on_currentIndexChanged)
+        newRecordWidget.saveLocallyandUpload.clicked.connect(self.saveRecord)
+
+    def saveRecord(self):
+        global newRecordWidget
+        patient_name = newRecordWidget.patient_name_entry.currentText()
+        case_name = newRecordWidget.case_name_entry.currentText()
+        common_name = newRecordWidget.common_autocomplete.currentText()
+        scientific_name = newRecordWidget.scientific_autocomplete.currentText()
+        hpc = newRecordWidget.hpc_entry.toPlainText()
+        moi = newRecordWidget.moi_entry.text()
+        if newRecordWidget.dv_yes.isChecked():
+            dv = 1
+        else:
+            dv = 0
+        o_a = newRecordWidget.on_arrival_entry.toPlainText()
+        print(o_a)
+        diagnosis = newRecordWidget.diagnosis_entry.toPlainText()
+        tx = newRecordWidget.Tx_entry.toPlainText()
+        report_suggestions_entry = newRecordWidget.report_suggestions_entry.toPlainText()
+        medication = newRecordWidget.medication_entry.toPlainText()
+        advice = newRecordWidget.advice_entry.toPlainText()
+        query = newRecordWidget.query_entry.text()
+
+
+
 
 
     #view saved records
@@ -194,8 +221,6 @@ class MainWindow(QMainWindow):
             return True
         except URLError as err: 
             return False
-
-
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

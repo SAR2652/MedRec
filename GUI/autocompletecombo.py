@@ -19,7 +19,7 @@ class Autocomplete(QComboBox):
         self.completer.setCompletionMode(QCompleter.UnfilteredPopupCompletion)
 
         self.setCompleter(self.completer)
-        self.resize(700, 30)
+        self.resize(500, 30)
 
         # connect signals
         def filter(text):

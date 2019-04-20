@@ -1,6 +1,10 @@
-from PyQt5.QtWidgets import QWidget, QListWidget
+import sys
+from PyQt5.QtWidgets import QWidget, QListWidget, QLabel, QComboBox
 from PyQt5.QtGui import QFont 
 from PyQt5.QtCore import QUrl
+path = '/home/sarvesh/ML_Github/MedRec/'
+sys.path.append(path + '/GUI/')
+from autocompletecombo import Autocomplete
 
 class ViewRecord(QWidget):
     def __init__(self, parent = None):
@@ -10,10 +14,7 @@ class ViewRecord(QWidget):
     def initViewRecordUI(self):
         self.setGeometry(525, 225, 1080, 720)
         
-        #initialize a list item widget
-        self.listItemWidget = QListWidget(self)
-        self.listItemWidget.addItem("Record 1")
-
-        #add widget
-        self.listItemWidget.resize(300, 400)
-        self.listItemWidget.move(200, 200)
+        #initialize combo box
+        self.patient_name_label = QLabel('Patient Name : ', self)
+        self.patient_name_entry = Autocomplete(self)
+        
