@@ -6,7 +6,7 @@ import sys, os
 from hashlib import md5
 from urllib.request import urlopen
 from urllib.error import URLError
-path = '/home/sarvesh/ML_Github/MedRec/'
+path = 'C:/MedRec'
 sys.path.append(path + '/data/')
 from diseaselist import DiseaseList
 from login import Login
@@ -39,7 +39,7 @@ class MainWindow(QMainWindow):
         #initialize empty scientific names list
         self.scientific_names = []
 
-        if not os.path.isfile(path + '/data/usercreds.txt'):
+        if os.path.isfile(path + '/data/usercreds.txt'):
             global start_widget
             #initialize a login widget
             start_widget = Login(self)

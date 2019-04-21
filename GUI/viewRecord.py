@@ -2,7 +2,7 @@ import sys
 from PyQt5.QtWidgets import QWidget, QListWidget, QLabel, QComboBox
 from PyQt5.QtGui import QFont 
 from PyQt5.QtCore import QUrl
-path = '/home/sarvesh/ML_Github/MedRec/'
+path = 'C:/MedRec'
 sys.path.append(path + '/GUI/')
 from autocompletecombo import Autocomplete
 

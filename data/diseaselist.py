@@ -1,8 +1,8 @@
 import sqlite3, os
-path = '/home/sarvesh/ML_Github/MedRec/'
+path = 'C:/MedRec'
 class DiseaseList:
     def __init__(self):
-        self.conn = sqlite3.connect(path + 'databases/medi_colab.db')
+        self.conn = sqlite3.connect(path + '/databases/medi_colab.db')
         self.c = self.conn.cursor()
 
     def generate_common_names_list(self):
