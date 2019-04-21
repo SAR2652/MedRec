@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget,QLineEdit, QLabel, QComboBox, QFormLayout, QTextEdit, QPushButton, QGroupBox, QHBoxLayout, QRadioButton
+from PyQt5.QtWidgets import QWidget,QLineEdit, QLabel, QComboBox, QFormLayout, QTextEdit, QPushButton, QGroupBox, QHBoxLayout, QRadioButton, QCheckBox
 from PyQt5.QtGui import QFont
 
 class PatientRegister(QWidget):
@@ -7,7 +7,7 @@ class PatientRegister(QWidget):
         self.initPatientRegisterUI()
 
     def initPatientRegisterUI(self):
-        self.setGeometry(525, 225, 900, 600)
+        self.setGeometry(525, 225, 1080, 720)
 
         #initialize a form groupbox
         self.formGroupBox = QGroupBox(self)
@@ -16,7 +16,7 @@ class PatientRegister(QWidget):
         self.registration_form_layout = QFormLayout(self)
 
         #initialize a horizontal form layout
-        self.hboxLayout = QHBoxLayout()  
+        self.genderhboxlayout = QHBoxLayout()  
 
         #initialize all labels for patient registry
         self.lastnameLabel = QLabel('Last Name : ', self)
@@ -28,6 +28,12 @@ class PatientRegister(QWidget):
         self.occupationLabel = QLabel('Occupation : ', self)
         self.contact_number_1_label = QLabel('Contact Number 1 : ', self)
         self.contact_number_2_label = QLabel('Contact Number 2 : ', self)
+        self.DHx_label = QCheckBox('DHx : ', self)
+        self.Ca_label = QCheckBox('Ca : ', self)
+        self.IDDM_label = QCheckBox('IDDM : ', self)
+        self.NIDDM_label = QCheckBox('NIDDM : ', self)
+        self.MI_label = QCheckBox('MI : ', self)
+        self.AF_label = QChec('AF : ', self)
 
         #initialize all fields for patient registry
         self.lastnameEntry = QLineEdit(self)
@@ -40,16 +46,17 @@ class PatientRegister(QWidget):
         self.occupationEntry = QLineEdit(self)
         self.contact_number_1_entry = QLineEdit(self)
         self.contact_number_2_entry = QLineEdit(self)
-
+        
+        
         #initialize submit and reset buttons
         self.offlineSubmitButton = QPushButton('Save locally', self)
         self.onlineSubmitButton = QPushButton('Save and upload', self)
         self.resetButton = QPushButton('Reset', self)
 
         #add the radio buttons to a horizontal box layout
-        self.hboxLayout.addWidget(self.maleSexEntry)
-        self.hboxLayout.addWidget(self.femaleSexEntry)
-        self.hboxLayout.addStretch()
+        self.genderhboxlayout.addWidget(self.maleSexEntry)
+        self.genderhboxlayout.addWidget(self.femaleSexEntry)
+        self.genderhboxlayout.addStretch()
 
         #add all labels and text areas to the form layout
         self.registration_form_layout.addRow(self.lastnameLabel, self.lastnameEntry)

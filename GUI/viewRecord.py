@@ -13,8 +13,14 @@ class ViewRecord(QWidget):
 
     def initViewRecordUI(self):
         self.setGeometry(525, 225, 1080, 720)
-        
-        #initialize combo box
+
+        #initialize labels
         self.patient_name_label = QLabel('Patient Name : ', self)
+        self.case_name_label = QLabel('Case Name : ', self)
+
+        #initialize fields
         self.patient_name_entry = Autocomplete(self)
+        self.case_name_entry = Autocomplete(self)
+
+        #initi
         

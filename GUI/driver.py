@@ -2,12 +2,17 @@ from PyQt5.QtWidgets import QApplication, QLabel, QLineEdit, QMainWindow, QPushB
 from PyQt5.QtGui import QFont
 from PyQt5.QtSql import QSqlDatabase, QSqlQueryModel, QSqlQuery
 from PyQt5.QtCore import pyqtSlot
-import sys, os
+from datetime import datetime
+import sys, os, sqlite3
+import requests as req
+import json
+import urllib.parse as up
 from hashlib import md5
 from urllib.request import urlopen
 from urllib.error import URLError
 path = 'C:/MedRec'
 sys.path.append(path + '/data/')
+sys.path.append(path + '/databases/')
 from diseaselist import DiseaseList
 from login import Login
 from dashboard import Dashboard
@@ -19,6 +24,7 @@ from newCaseRecord import NewRecord
 from viewRecord import ViewRecord
 
 #define global variables for ease in submitting values
+host_url = 'http://127.0.0.1:8000/'
 start_widget = None
 patient_widget = None
 newRecordWidget = None
@@ -28,6 +34,9 @@ class MainWindow(QMainWindow):
     def __init__(self, parent = None):
         super(MainWindow, self).__init__(parent)
         self.setGeometry(525, 225, 1080, 720)
+        title = 'MedRec'
+        self.setWindowTitle(title)
+        self.conn = sqlite3.connect(path + '/databases/medi_colab.db')
 
         #initialize and set a central widget
         self.central_widget = QStackedWidget()
@@ -39,11 +48,29 @@ class MainWindow(QMainWindow):
         #initialize empty scientific names list
         self.scientific_names = []
 
-        if os.path.isfile(path + '/data/usercreds.txt'):
-            global start_widget
-            #initialize a login widget
-            start_widget = Login(self)
-            start_widget.loginButton.clicked.connect(self.login)
+        if self.checkInternetConn:
+            #fetch token from offline database
+            token = self.retrieve_token()
+            if self.verify_token(token):
+                dashboard_widget = Dashboard(self)
+                #log in to dashboard
+                dashboard = Dashboard(self)
+                self.central_widget.addWidget(dashboard)
+                self.central_widget.setCurrentWidget(dashboard)
+
+                #define methods to access on clicking buttons
+                dashboard.makeRecordEntryButton.clicked.connect(self.chooseCase)
+                dashboard.viewProfileButton.clicked.connect(self.viewProfile)
+                dashboard.registerPatientButton.clicked.connect(self.register_patient)
+                dashboard.viewPatientRecordButton.clicked.connect(self.viewRecord)
+
+
+            else:
+                global start_widget
+                #initialize a login widget
+                start_widget = Login(self)
+                start_widget.loginButton.clicked.connect(self.login)
+               
         else:
             start_widget = Register(self)
             start_widget.registerButton.clicked.connect(self.register)
@@ -51,6 +78,47 @@ class MainWindow(QMainWindow):
         #make it initial widget
         self.central_widget.addWidget(start_widget)
         self.central_widget.setCurrentWidget(start_widget)
+    
+     #check internet connecivity    
+    def checkInternetConn(self):
+        try:
+            urlopen('https://www.google.co.in', timeout = 1)
+            return True
+        except URLError as err: 
+            return False
+
+    def obtain_token(self, payload):
+        data = payload
+        ourRequestkaResponse = req.post(
+        up.urljoin(host_url, '/api/v1/token-auth/'), data=data)
+        response_data = json.loads(ourRequestkaResponse.text)
+        print(ourRequestkaResponse.text)
+        token = response_data.get('token')
+        return token
+        #insert into auth_token_data with token value and timestamp
+
+    def retrieve_token(self):
+        c = self.conn.cursor()
+        c.execute("""SELECT token FROM auth_token_data""")
+        op = c.fetchall()[0]
+        return op
+
+    def verify_token(self, token):
+        data = {
+            "token": token
+        }
+        ourRequestkaResponse = req.post(
+        up.urljoin(host_url, '/api/v1/api-token-verify/'), data=data)
+        response_data = json.loads(ourRequestkaResponse.text)
+        verify_token = response_data.get('token')
+        if(verify_token == token):
+            print('Token Verified')
+            return True
+        else:
+            print('Token Invalid')
+            return False
+
+    
 
     #register a new user
     def register(self):
@@ -59,26 +127,85 @@ class MainWindow(QMainWindow):
         print(last_name)
         first_name = start_widget.firstnameEntry.text()
         middle_name = start_widget.middlenameEntry.text()
+        email = start_widget.emailEntry.text()
         dob = start_widget.dobEntry.selectedDate().toString("yyyy-MM-dd")
         sex = 0 #default
         if start_widget.femaleSexEntry.isChecked():
             sex = 1
-        address = start_widget.addressEntry.text()
-        clinic_address = start_widget.clinicAddressEntry.text()
+        address = start_widget.addressEntry.toPlainText()
+        clinic_address = start_widget.clinicAddressEntry.toPlainText()
         degree = start_widget.degreeEntry.text()
         field = start_widget.fieldEntry.text()
-        password = start_widget.passwordEntry().text()
-        confpassword = start_widget.confirmpasswordEntry.text()
+        password = start_widget.passwordEntry.text()
+        confpassword = start_widget.confpasswordEntry.text()
+        if password != confpassword:
+            print("Passwords do not match!!!")
+        else:
+            payload = {
+                'first_name': first_name,
+                'last_name': last_name,
+                'middle_name': middle_name,
+                'email': email,
+                'password': password,
+                #'dob' : dob,
+                #'sex' : sex, 
+            }
+
+            if self.checkInternetConn():
+                ourRequest = req.post(up.urljoin(host_url, 'api/v1/patient_/user/'), data=payload)
+
+                print(ourRequest.text)
+                print(ourRequest.status_code)
+
+                #if status code is 201, then perform this logic, else re-register
+                response_data = json.loads(ourRequest.text)
+                id = response_data.get('id')
+                token_payload = {
+                    'email' : email,
+                    'password' : password,
+                }
+                token = self.obtain_token(token_payload)
+                if self.verify_token(token):
+                    #register practitioner
+                    Auth_data = "JWT {}".format(token)
+                    headers = {
+                    'Authorization': Auth_data
+                    }  
+
+                    ourRequestkaResponse = req.post(up.urljoin(
+                    host_url, '/api/v1/patient_/medical_practitioner/'), headers=headers)
+
+                    response_data = json.loads(ourRequestkaResponse.text)
+                    print(ourRequestkaResponse)
+                    result = response_data.get('results')
+                    c = self.conn.cursor()
+                    c.execute("""INSERT INTO auth_token_data(token, created_at) VALUES (?, ?)""", (token, timestamp))
+
+                else:
+                    #re-register 
+                    dashboard_widget = Dashboard(self)
+                    #log in to dashboard
+                    dashboard = Dashboard(self)
+                    self.central_widget.addWidget(dashboard)
+                    self.central_widget.setCurrentWidget(dashboard)
+
+                    #define methods to access on clicking buttons
+                    dashboard.makeRecordEntryButton.clicked.connect(self.chooseCase)
+                    dashboard.viewProfileButton.clicked.connect(self.viewProfile)
+                    dashboard.registerPatientButton.clicked.connect(self.register_patient)
+                    dashboard.viewPatientRecordButton.clicked.connect(self.viewRecord)
+
         #region = 
         #affiliation =
 
     def login(self):
         global start_widget
-        if logged_user is not None:
-            user_id = start_widget.user_idLineEdit.text()
-            md5sum = md5(start_widget.passwordLineEdit.text().encode())
-            encrypted = str(md5sum.digest())
-            
+        email = start_widget.emailLineEdit.text()
+        password = start_widget.passwordLineEdit.text()
+        payload = {
+            'email' : email,
+            'password' : password,
+        }
 
         #log in to dashboard
         dashboard = Dashboard(self)
@@ -117,7 +244,7 @@ class MainWindow(QMainWindow):
     #def savePatientOffline(self):
     
 
-    #def submitRecordOnline(self)
+    #def submitPatientOnline(self)
     def viewProfile(self):
         profile_widget = Profile(self)
         self.central_widget.addWidget(profile_widget)
@@ -125,8 +252,6 @@ class MainWindow(QMainWindow):
 
         #return to dashboard
         profile_widget.backButton.clicked.connect(self.login)
-        
-    
 
     #create a record for a completely existing case
     def createNewCaseRecord(self, n):
@@ -213,14 +338,6 @@ class MainWindow(QMainWindow):
         view_record_widget = ViewRecord(self)
         self.central_widget.addWidget(view_record_widget)
         self.central_widget.setCurrentWidget(view_record_widget)
-
-    #check internet connecivity    
-    def checkInternetConn(self):
-        try:
-            urlopen('https://www.google.co.in', timeout = 1)
-            return True
-        except URLError as err: 
-            return False
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

@@ -26,6 +26,9 @@ class Register(QWidget):
         self.lastnameLabel = QLabel('Last Name : ', self)
         self.firstnameLabel = QLabel('First Name : ', self)
         self.middlenameLabel = QLabel('Middle Name : ', self)
+        self.passwordLabel = QLabel('Password : ', self)
+        self.confpasswordLabel = QLabel('Confirm Password : ', self)
+        self.emailLabel = QLabel('Email : ', self)
         self.dobLabel = QLabel('Date of Birth : ', self)
         self.sexLabel = QLabel('Sex : ', self)
         self.addressLabel = QLabel('Address : ', self)
@@ -34,11 +37,16 @@ class Register(QWidget):
         self.degreeLabel = QLabel('Degree : ', self)
         self.fieldLabel = QLabel('Field : ', self)
         self.affiliationLabel = QLabel('Affiliation : ', self)
+        self.regionLabel = QLabel('Region : ', self)
+        self.countryLabel = QLabel('Country : ', self)
 
         #initialize all text fields
         self.lastnameEntry = QLineEdit(self)
         self.firstnameEntry = QLineEdit(self)
         self.middlenameEntry = QLineEdit(self)
+        self.emailEntry = QLineEdit(self)
+        self.passwordEntry = QLineEdit(self)
+        self.confpasswordEntry = QLineEdit(self)
         self.dobEntry = QCalendarWidget(self)
         self.maleSexEntry = QRadioButton('Male', self)
         self.femaleSexEntry = QRadioButton('Female', self)
@@ -48,6 +56,8 @@ class Register(QWidget):
         self.degreeEntry = QLineEdit(self)
         self.fieldEntry = QLineEdit(self)
         self.affiliationEntry = QLineEdit(self)
+        self.regionEntry = QComboBox(self)
+        self.countryEntry = QComboBox(self)
 
         #initialize clear and register buttons
         self.clearButton = QPushButton('Clear', self)
@@ -62,6 +72,9 @@ class Register(QWidget):
         self.registration_form_layout.addRow(self.lastnameLabel, self.lastnameEntry)
         self.registration_form_layout.addRow(self.firstnameLabel, self.firstnameEntry)
         self.registration_form_layout.addRow(self.middlenameLabel, self.middlenameEntry)
+        self.registration_form_layout.addRow(self.emailLabel, self.emailEntry)
+        self.registration_form_layout.addRow(self.passwordLabel, self.passwordEntry)
+        self.registration_form_layout.addRow(self.confpasswordLabel, self.confpasswordEntry)
         self.registration_form_layout.addRow(self.dobLabel, self.dobEntry)
 
         #add horizontally oriented gender buttons
@@ -74,10 +87,11 @@ class Register(QWidget):
         self.registration_form_layout.addRow(self.degreeLabel, self.degreeEntry)
         self.registration_form_layout.addRow(self.fieldLabel, self.fieldEntry)
         self.registration_form_layout.addRow(self.affiliationLabel, self.affiliationEntry)
+        self.registration_form_layout.addRow(self.regionLabel, self.regionEntry)
+        self.registration_form_layout.addRow(self.countryLabel, self.countryEntry)
 
         #add all buttons with their respective column spans
-        self.registration_form_layout.addRow(self.clearButton)
-        self.registration_form_layout.addRow(self.registerButton)
+        self.registration_form_layout.addRow(self.clearButton, self.registerButton)
 
         #create and seta custom font for the form
         newFont = QFont("SansSerif", 11.5)
